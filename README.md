@@ -41,64 +41,47 @@ A powerful, cross-platform mobile application built with **Flutter** and **Fireb
 ## 📂 System Architecture
 
 ```mermaid
-flowchart LR
-    subgraph Client["Client Layer (Flutter App)"]
-        UI[UI Screens]
-        SM[State Management (Provider)]
-    end
-
-    subgraph Services["Application Services"]
-        AUTH[Auth Service]
-        DB[Firestore Service]
-        ST[Storage Service]
-    end
-
-    subgraph Firebase["Firebase Cloud"]
-        FA[Firebase Authentication]
-        CF[Cloud Firestore]
-        CS[Cloud Storage]
-    end
-
-    UI --> SM
-    SM --> AUTH
-    SM --> DB
-    SM --> ST
-
-    AUTH --> FA
-    DB --> CF
-    ST --> CS
-
+graph TD
+    App["Flutter App Layer"] --> Logic["Provider State Management"]
+    Logic --> Auth["Auth Service"]
+    Logic --> DB["Firestore Service"]
+    Logic --> Storage["Storage Service"]
     
+    Auth --- FA[("Firebase Auth")]
+    DB --- CF[("Cloud Firestore")]
+    Storage --- CS[("Cloud Storage")]
 ```
 
 ---
 
 ## 📱 App Journey
+
 ```mermaid
-flowchart TD
-    A[App Launch] --> B[Splash Screen]
-    B --> C{Authenticated?}
+graph TD
+    Start["App Launch"] --> Splash["Splash Screen"]
+    Splash --> Auth{"Authenticated?"}
 
-    C -- No --> D[Login / Register]
-    D --> E[Authentication Success]
+    Auth -- "No" --> Login["Login / Register"]
+    Login --> Success["Authentication Success"]
 
-    C -- Yes --> F[Role Check]
-    E --> F
+    Auth -- "Yes" --> Role["Role Check"]
+    Success --> Role
 
-    F -- Patient --> G[Patient Dashboard]
-    F -- Admin --> H[Admin Dashboard]
+    Role -- "Patient" --> P_Home["Patient Dashboard"]
+    Role -- "Admin" --> A_Home["Admin Dashboard"]
 
-    G --> G1[View Reports]
-    G --> G2[Upload Documents]
-    G --> G3[Manage Profile]
+    P_Home --> P1["View Reports"]
+    P_Home --> P2["Upload Documents"]
+    P_Home --> P3["Manage Profile"]
 
-    H --> H1[Manage Patients]
-    H --> H2[Upload Reports]
-    H --> H3[Monitor Activity]
+    A_Home --> A1["Manage Patients"]
+    A_Home --> A2["Upload Reports"]
+    A_Home --> A3["Monitor Activity"]
 
-    G --> I[Logout]
-    H --> I
-    I --> D
+    P_Home --> Logout["Logout"]
+    A_Home --> Logout
+    Logout --> Login
+```
 
 
 ---
